@@ -1,0 +1,569 @@
+/* ==========================================
+   全体レイアウト・画面中央寄せの設定
+   ========================================== */
+body {
+  margin: 0;                                /* 画面外側の余白をなくして隙間をゼロにします */
+  padding: 0;                               /* 画面内側の余白をなくします */
+  height: 100vh;                            /* 画面の高さを表示画面（ビューポート）の100%に設定します */
+  display: flex;                            /* 子要素をフレキシブルにレイアウト配置します */
+  justify-content: center;                  /* 要素を左右の中央に配置します */
+  align-items: center;                      /* 要素を上下の中央に配置します */
+  background-color: #f0f2f5;                /* 画面全体の背景色を明るいグレーに設定します */
+  font-family: sans-serif;                  /* 全体のフォントをゴシック体系の標準フォントに設定します */
+}
+
+.game-container {
+  display: flex;                            /* カードと中央エリアを横並びで配置します */
+  align-items: center;                      /* 横並びの要素の上下中心を揃えます */
+  justify-content: center;                  /* 横並びの要素を左右中央に寄せます */
+  gap: 60px;                                /* カードと中央エリアの間隔（横の隙間）を60pxに広げます */
+}
+
+/* ==========================================
+   プレイヤーカードの基本スタイル
+   ========================================== */
+.player-card {
+  width: 400px;                             /* カードの横幅を400pxに設定します */
+  padding: 50px 30px;                       /* 内側の余白を調整し、要素がカードいっぱいに広がるようにします */
+  background-color: #ffffff;                /* カードの背景色を白色に設定します */
+  border-radius: 24px;                      /* カードの四隅の角の丸みを24pxにします */
+  text-align: center;                       /* カード内のテキストを中央揃えにします */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* カードの周囲にうっすらとした影をつけます */
+  border: 6px solid transparent;            /* 手番表示用の枠線を太さ6pxで用意し、初期状態は透明にします */
+  transition: all 0.3s ease;                /* アニメーションの変化を0.3秒かけて滑らかにします */
+  opacity: 0.6;                             /* 自分のターンではない時は透明度を0.6（少し薄く）にします */
+}
+
+/* 「1P」「2P」バッジ */
+.status-badge {
+  display: inline-block;                    /* インライン要素でありながら幅や余白を指定可能にします */
+  padding: 18px 50px;                       /* バッジの内側余白を上下18px・左右50pxに広げます */
+  font-size: 3.2rem;                        /* 1P/2Pの文字サイズを3.2remへ拡大します */
+  font-weight: bold;                        /* バッジの文字を太字にします */
+  border-radius: 48px;                      /* バッジの角丸を大きめにしてカプセル形状を強調します */
+  background-color: #eee;                   /* バッジの背景色を薄いグレーに設定します */
+  color: #555;                              /* バッジの文字色をグレーに設定します */
+  letter-spacing: 2px;                      /* 文字間隔を広げて存在感を高めます */
+}
+
+/* 勝利したプレイヤーのカード */
+.player-card.winner {
+  opacity: 1 !important;                    /* 透明度を強制的に100%（くっきり表示）にします */
+  border-color: #ffd700 !important;         /* カードの枠線をゴールド色（金色）に変化させます */
+  background-color: #fffde7 !important;     /* カードの背景色を明るいクリーム色に変化させます */
+  box-shadow: 0 0 35px rgba(255, 215, 0, 0.8) !important; /* カードの周囲に金色の強い発光エフェクトをつけます */
+  transform: scale(1.1) translateY(-8px);    /* カードを1.1倍に拡大し、少し上に浮かせます */
+}
+
+.player-card.winner .status-badge {
+  background-color: #ffb300 !important;     /* 勝利時のバッジ背景色を濃いゴールド色に変更します */
+  color: #fff !important;                   /* 勝利時のバッジ文字色を白色に変更します */
+}
+
+/* プレイヤー1のアクティブスタイル */
+#p1-card.active {
+  opacity: 1;                               /* 手番中のカードをくっきり100%表示にします */
+  border-color: #e53935;                    /* カードの枠線をプレイヤー1のシンボルカラー（赤色）にします */
+  box-shadow: 0 8px 24px rgba(229, 57, 53, 0.3); /* カードの周囲に赤色の光る影をつけます */
+  transform: translateY(-6px);              /* カードを6px上に持ち上げて手番中であることを強調します */
+}
+
+#p1-card.active .status-badge {
+  background-color: #ff3333;                /* 手番中の「1P」バッジ背景色を鮮やかな赤色にします */
+  color: white;                             /* バッジの文字色を白色にします */
+}
+
+/* プレイヤー2のアクティブスタイル */
+#p2-card.active {
+  opacity: 1;                               /* 手番中のカードをくっきり100%表示にします */
+  border-color: #1e88e5;                    /* カードの枠線をプレイヤー2のシンボルカラー（青色）にします */
+  box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3); /* カードの周囲に青色の光る影をつけます */
+  transform: translateY(-6px);              /* カードを6px上に持ち上げて手番中であることを強調します */
+}
+
+#p2-card.active .status-badge {
+  background-color: #2196f3;                /* 手番中の「2P」バッジ背景色を鮮やかな青色にします */
+  color: white;                             /* バッジの文字色を白色にします */
+}
+
+/* ==========================================
+   ライフ表示エリア
+   ========================================== */
+.life-container {
+  margin-top: 36px;                         /* 上のバッジとの間隔を36pxに広げます */
+  font-size: 1.8rem;                        /* 「ライフ:」のラベル文字を1.8remに拡大します */
+  font-weight: bold;                        /* テキストを太字にします */
+  color: #555;                              /* テキストの色をダークグレーにします */
+}
+
+.life-container span {
+  display: block;                           /* 改行して独立した行として表示します */
+  font-size: 3.2rem;                        /* ハートマーク（❤️）のサイズを3.2remに超拡大します */
+  margin-top: 12px;                         /* 「ライフ:」テキストとの間の隙間を12pxに調整します */
+  letter-spacing: 6px;                      /* ハート同士の間隔を少し開けて綺麗に見せます */
+}
+
+/* ==========================================
+   中央エリア（メッセージ・ボタン）
+   ========================================== */
+.center-area {
+  display: flex;                            /* 子要素を柔軟にレイアウトします */
+  flex-direction: column;                   /* 子要素（メッセージ・ボタン・盤面）を縦一列に並べます */
+  align-items: center;                      /* 縦並びの要素を横方向の中央に揃えます */
+}
+
+#status-message {
+  font-size: 2.5rem;                        /* メッセージテキストの大きさを2.5remにします */
+  font-weight: bold;                        /* メッセージテキストを太字にします */
+  margin-bottom: 24px;                      /* ボタンとの間の隙間を24pxに広げます */
+  padding: 18px 36px;                       /* メッセージ枠の余白を上下18px・左右36pxに拡大します */
+  background-color: #ffffff;                /* メッセージ枠の背景色を白色にします */
+  border-radius: 16px;                      /* メッセージ枠の角丸を16pxにします */
+  border: 4px solid transparent;            /* 手番の枠線カラー用の太さ4pxの透明枠線を配置します */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);/* 枠の周囲に薄い影をつけます */
+  color: #333;                              /* メッセージの文字色を濃いグレーにします */
+  text-align: center;                       /* テキストを中央揃えにします */
+  transition: border-color 0.3s, box-shadow 0.3s; /* 枠線の色の変化を0.3秒かけてアニメーション表示します */
+}
+
+/* 盤面上のボタン配置エリア */
+.top-button-area {
+  margin-bottom: 24px;                      /* 盤面との間に24pxの余白を設けます */
+}
+
+/* 盤面下のボタン配置エリア */
+.button-group {
+  margin-top: 24px;                         /* 盤面の下に24pxの余白を設けて配置します */
+  display: flex;                            /* ボタンを横並びにするコンテナ設定です */
+  gap: 16px;                                /* ボタン同士の間隔を16pxあけます */
+  justify-content: center;                  /* ボタン群を左右中央に寄せます */
+}
+
+/* 各種アクションボタンの基本スタイル */
+#start-btn, #reset-btn, .action-btn {
+  padding: 16px 36px;                       /* ボタンの内側余白を設定します */
+  font-size: 1.5rem;                        /* ボタンの文字サイズを大きくします */
+  font-weight: bold;                        /* ボタン文字を太字にします */
+  color: white;                             /* 文字色を白色にします */
+  border: none;                             /* デフォルト枠線を消去します */
+  border-radius: 12px;                      /* 角丸を12pxにします */
+  cursor: pointer;                          /* ポインターカーソルにします */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* ボタンの立体感を出す影です */
+  transition: background-color 0.2s, transform 0.1s; /* 滑らかなアニメーションを設定します */
+}
+
+#start-btn {
+  background-color: #ff5722;                /* スタートボタンのオレンジ背景色です */
+}
+
+#start-btn:hover {
+  background-color: #e64a19;                /* スタートボタンホバー時の濃い色です */
+}
+
+#reset-btn {
+  background-color: #757575;                /* リセットボタンのグレー背景色です */
+}
+
+#reset-btn:hover {
+  background-color: #616161;                /* リセットボタンホバー時の濃い色です */
+}
+
+.action-btn {
+  background-color: #009688;                /* ルール説明ボタンのティールグリーン色です */
+}
+
+.action-btn:hover {
+  background-color: #00796b;                /* ルール説明ボタンホバー時の濃い色です */
+}
+
+.hidden {
+  display: none !important;                 /* 非表示クラスが指定された時に画面から隠します */
+}
+
+/* P1手番時のステータスメッセージ（赤色） */
+#status-message.p1-turn {
+  border-color: #e53935;                    /* メッセージ枠の枠線をP1カラーの赤色にします */
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3); /* 枠の周囲に赤色のうっすらとした光を付与します */
+}
+
+/* P2手番時のステータスメッセージ（青色） */
+#status-message.p2-turn {
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3); /* 枠の周囲に青色のうっすらとした光を付与します */
+  border-color: #1e88e5;                    /* メッセージ枠の枠線をP2カラーの青色にします */
+}
+
+/* ==========================================
+   ゲーム盤面（4x4 グリッド）
+   ========================================== */
+#board {
+  display: grid;                            /* 格子状（CSS Grid）でマス目を並べるレイアウトにします */
+  grid-template-columns: repeat(4, 130px);  /* 1マスの幅を130pxに設定します */
+  grid-template-rows: repeat(4, 130px);     /* 1マスの高さを130pxに設定します */
+  gap: 12px;                                /* マス同士の隙間を12pxに広げます */
+  background-color: #333;                   /* 盤面の背景色（マスとマスの間の隙間の色）をダークグレーにします */
+  padding: 12px;                            /* 盤面の外周余白を12pxに広げます */
+  border-radius: 18px;                      /* 盤面全体の角丸を18pxに大きくします */
+  box-sizing: border-box;                   /* パディングを含めてサイズ指定に収めます */
+}
+
+/* マスの初期状態 */
+.cell {
+  background-color: #86b32d;                /* 未開封マスの背景色を鮮やかな芝生色（緑色）に設定します */
+  display: flex;                            /* マスの中の記号や数字の配置をフレキシブルにします */
+  justify-content: center;                  /* マス内のテキストを左右中央に配置します */
+  align-items: center;                      /* マス内のテキストを上下中央に配置します */
+  font-size: 2.2rem;                        /* マス内の文字サイズを2.2remにします */
+  font-weight: bold;                        /* マス内の文字を太字にします */
+  color: #333;                              /* 文字色を濃いグレーにします */
+  cursor: pointer;                          /* クリックできることを示す指マークカーソルにします */
+  user-select: none;                        /* マスをダブルクリックした時の青いテキスト選択を防止します */
+  border-radius: 10px;                      /* 各マスの角丸を10pxにします */
+  transition: background-color 0.2s;        /* ホバー時の背景色変化を0.2秒で滑らかにします */
+}
+
+.cell:hover {
+  background-color: #f5f5f5;                /* 背景色を明るいグレーに変化させてカーソルが乗っていることを示します */
+}
+
+/* ★Font Awesome 5 Solid 爆弾SVGアイコン用スタイル */
+.svg-bomb {
+  width: 3.2rem;                            /* 爆弾SVGアイコンの横幅を3.2remに設定します */
+  height: 3.2rem;                           /* 爆弾SVGアイコンの高さを3.2remに設定します */
+  display: inline-block;                    /* インラインブロック要素として配置します */
+  vertical-align: middle;                   /* 上下の中央に揃えます */
+}
+
+/* 爆弾設置フェーズ（P1設置時：背景色黄色＋爆弾色赤） */
+.cell.bomb-set-p1 {
+  background-color: #fffde7 !important;     /* マスの背景色を黄色にします */
+  color: #e53935 !important;                /* 爆弾アイコン（SVG）の色を鮮やかな赤色にします */
+}
+
+/* 爆弾設置フェーズ（P2設置時：背景色黄色＋爆弾色青） */
+.cell.bomb-set-p2 {
+  background-color: #fffde7 !important;     /* マスの背景色を黄色にします */
+  color: #1e88e5 !important;                /* 爆弾アイコン（SVG）の色を鮮やかな青色にします */
+}
+
+/* めくったプレイヤーに応じたマスの背景色 */
+.cell.revealed-by-p1 {
+  background-color: #ffebee !important;     /* プレイヤー1がめくったマス：薄赤背景 */
+}
+
+.cell.revealed-by-p2 {
+  background-color: #e3f2fd !important;     /* プレイヤー2がめくったマス：薄青背景 */
+}
+
+/* 設置したプレイヤーに応じた爆弾アイコン（SVG）の色 */
+.cell.bomb-owner-p1 {
+  color: #e53935 !important;                /* P1が設置した爆弾：赤色 */
+}
+
+.cell.bomb-owner-p2 {
+  color: #1e88e5 !important;                /* P2が設置した爆弾：青色 */
+}
+
+/* 安全マス（数字表示） */
+.cell.safe {
+  background-color: #f5f5f5;                /* マスの背景色を明るいグレーに変更します */
+  color: #333;                              /* 基本となる文字色を濃いグレーにします */
+  font-size: 3.0rem;                        /* 安全マスの周囲爆弾数（数字）のサイズを3.0remに設定します */
+  font-weight: bold;                        /* 数字を太字にします */
+}
+
+/* 数字の個数に応じた文字色（マインスイーパー風） */
+.cell.safe[data-count="0"] { color: #aaaaaa; } /* 周囲の爆弾数が0の場合、数字の文字色を薄いグレーにします */
+.cell.safe[data-count="1"] { color: #1976d2; } /* 周囲の爆弾数が1の場合、数字の文字色を青色にします */
+.cell.safe[data-count="2"] { color: #388e3c; } /* 周囲の爆弾数が2の場合、数字の文字色を緑色にします */
+.cell.safe[data-count="3"] { color: #d32f2f; } /* 周囲の爆弾数が3の場合、数字の文字色を赤色にします */
+.cell.safe[data-count="4"] { color: #7b1fa2; } /* 周囲の爆弾数が4の場合、数字の文字色を紫色にします */
+.cell.safe[data-count="5"] { color: #ff8f00; } /* 周囲の爆弾数が5の場合、数字の文字色をオレンジ色にします */
+.cell.safe[data-count="6"] { color: #00838f; } /* 周囲の爆弾数が6の場合、数字の文字色をシアン（水色）にします */
+.cell.safe[data-count="7"] { color: #424242; } /* 周囲の爆弾数が7の場合、数字の文字色をダークグレーにします */
+.cell.safe[data-count="8"] { color: #000000; } /* 周囲の爆弾数が8の場合、数字の文字色を黒色にします */
+
+.cell.revealed {
+  cursor: default;                          /* クリック不可であることを示す矢印（標準）カーソルに戻します */
+}
+
+/* ==========================================
+   ルール説明用モーダルポップアップのスタイル (全体拡大版)
+   ========================================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 44px 54px 32px 54px;            /* 内側余白を拡大 */
+  border-radius: 28px;                     /* 角丸を大きく */
+  width: 780px;                            /* モーダルの横幅を拡大 */
+  max-width: 92vw;
+  height: 540px;                           /* モーダルの縦幅を拡大 */
+  position: relative;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;           /* フッターを最下部に固定 */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.close-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  font-size: 2.6rem;                       /* 閉じるボタンを拡大 */
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* 上部コンテンツエリア */
+.modal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;                        /* スクロールが必要な場合のみ有効化 */
+  padding-right: 8px;
+  margin-bottom: 16px;
+}
+
+/* 表示中ページが modal-body の高さを埋めてフッターの位置を固定 */
+.rule-page:not(.hidden) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ルールページ内のテキストと見出し */
+.rule-page h2 {
+  margin-top: 0;
+  font-size: 2.3rem;                       /* 見出しサイズを拡大 */
+  color: #333;
+  margin-bottom: 28px;
+}
+
+.rule-page ul {
+  padding-left: 0;                         /* 標準インデントをリセット */
+  list-style: none;                        /* 標準の「・」をオフにして自前描画 */
+  line-height: 1.9;
+  font-size: 1.4rem;                       /* 本文の文字サイズを拡大 */
+  color: #333;
+  margin: 0;
+}
+
+/* 通常テキスト箇条書き（1行目の頭の高さに「・」を配置） */
+.rule-page li {
+  position: relative;
+  padding-left: 28px;                      /* 「・」が入る余白を拡大 */
+  margin-bottom: 20px;
+}
+
+.rule-page li::before {
+  content: "•";                            /* 「・」のアイコンを描画 */
+  position: absolute;
+  left: 4px;
+  top: 0;                                  /* 最初の行の頭に固定 */
+  font-size: 1.5rem;                       /* 「・」のサイズも大きく調整 */
+  line-height: 1.9;                        /* 本文の line-height と合わせて位置を統一 */
+  color: #333;
+}
+
+/* 画像付き項目（ページ4）：画像とテキストおよび「・」を上下中央揃え */
+.rule-page li:has(.rule-img-container) {
+  display: flex;
+  align-items: center;                     /* 画像がある時は垂直中央揃え */
+  padding-left: 0;                         /* 画像付きの場合は左余白をリセット */
+}
+
+.rule-page li:has(.rule-img-container)::before {
+  position: static;                        /* 上部固定を解除 */
+  margin-right: 14px;                      /* 画像との間隔 */
+  line-height: 1;
+}
+
+/* 画像とテキストのレイアウト */
+.rule-img-container {
+  display: flex;
+  align-items: center;                    /* 画像と右側のテキストを上下中央揃え */
+  gap: 18px;
+  margin: 0;
+}
+
+.rule-cell-img {
+  width: 80px;                            /* 画像サイズを 80px に拡大 */
+  height: 80px;                           /* 画像サイズを 80px に拡大 */
+  flex-shrink: 0;
+  object-fit: cover;                      /* 端の不要な黒枠をトリミング */
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: #f0f0f0;
+}
+
+/* フッター（ボタンエリア） */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  flex-shrink: 0;                          /* フッターの潰れ防止 */
+}
+
+.page-btn {
+  padding: 10px 24px;                      /* ボタンサイズを拡大 */
+  font-size: 1.1rem;                       /* ボタン文字サイズを拡大 */
+  font-weight: bold;
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #00796b;
+}
+
+.page-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#page-indicator {
+  font-size: 1.15rem;                      /* ページ表示テキストを拡大 */
+  font-weight: bold;
+  color: #666;
+}
+
+/* ==========================================
+   レスポンシブ対応（スマホ・小型画面向け最適化）
+   ========================================== */
+@media (max-width: 768px) {
+  body {
+    height: auto;                           /* スマホ表示時は画面縦幅の固定制限を解除します */
+    min-height: 100vh;                      /* 全体高さを100vh以上に設定します */
+  }
+
+  .game-container {
+    flex-direction: column;                 /* 画面要素（カード・盤面）を縦並びに切り替えます */
+    gap: 16px;                              /* 縦並びの隙間をスリムに調整します */
+    padding: 12px;                          /* コンテナ外側の余白を設定します */
+    width: 100%;                            /* 幅を100%にします */
+    box-sizing: border-box;                 /* パディング込みの計算にします */
+  }
+
+  .player-card {
+    width: 100%;                            /* カードの横幅を画面いっぱいまで広げます */
+    max-width: 420px;                       /* カードの最大横幅を420pxに設定します */
+    padding: 12px 20px;                     /* カード内部の余白を上下12px・左右20pxに調整します */
+    display: flex;                          /* カード内の要素を横並びに配置します */
+    justify-content: space-between;         /* バッジとライフを左右の両端にきれいには配置します */
+    align-items: center;                    /* カード内の要素の上下中央を揃えます */
+    box-sizing: border-box;                 /* パディング込み計算にします */
+  }
+
+  .status-badge {
+    padding: 8px 22px;                      /* スマホ用バッジ余白に調整します */
+    font-size: 1.8rem;                      /* スマホ用バッジ文字サイズに調整します */
+    flex-shrink: 0;                         /* 横幅が潰れないよう固定します */
+  }
+
+  .life-container {
+    margin-top: 0;                          /* 上の余白をなくします */
+    font-size: 1.3rem;                      /* 「ライフ:」の文字サイズを1.3remに大きくします */
+    display: flex;                          /* ラベルとハートマークを横並びにします */
+    align-items: center;                    /* 上下の中心をきれいに揃えます */
+    gap: 8px;                               /* ラベルとハートの間に適度な間隔を設けます */
+  }
+
+  .life-container span {
+    display: inline-block;                  /* 改行させずに横並び表示にします */
+    font-size: 1.9rem;                      /* ハートマーク（❤️）のサイズを1.9remへ拡大します */
+    margin-top: 0;                          /* 上の余白をなくします */
+    letter-spacing: 2px;                    /* スマホ用ハート同士の配置間隔をきれいに整えます */
+  }
+
+  .center-area {
+    width: 100%;                            /* 中央エリアの幅を100%にします */
+    align-items: center;                    /* 中央揃えにします */
+  }
+
+  #status-message {
+    font-size: 1.2rem;                      /* メッセージの文字サイズを調整します */
+    padding: 10px 18px;                     /* 枠の内側余白を縮小します */
+    margin-bottom: 12px;                    /* 下の隙間を調整します */
+    width: 100%;                            /* 幅を広げます */
+    max-width: 420px;                       /* 最大幅を制限します */
+    box-sizing: border-box;                 /* パディング込み計算にします */
+  }
+
+  #start-btn, #reset-btn, .action-btn {
+    padding: 10px 24px;                     /* ボタン内部の余白を調整します */
+    font-size: 1.1rem;                      /* ボタンの文字サイズを調整します */
+  }
+
+  #board {
+    width: min(92vw, 420px);                /* 画面幅の92%または最大420pxで画面に合わせて自動伸縮します */
+    height: min(92vw, 420px);               /* 正方形を保つため高さも同じ設定にします */
+    grid-template-columns: repeat(4, 1fr);  /* 4列を均等な比率（1fr）で割ってピタリと納めます */
+    grid-template-rows: repeat(4, 1fr);     /* 4行を均等な比率（1fr）で割ってピタリと納めます */
+    gap: 8px;                               /* マス同士の隙間を8pxに調整します */
+    padding: 10px;                          /* 盤面の外周黒枠の太さを10pxにします */
+    box-sizing: border-box;                 /* 黒枠（パディング）がはみ出ないように全体幅に含めます */
+  }
+
+  .cell {
+    font-size: 1.8rem;                      /* スマホ用マスの基本文字サイズを拡大調整します */
+  }
+
+  .svg-bomb {
+    width: 2.2rem;                          /* スマホ用の爆弾アイコン幅を調整します */
+    height: 2.2rem;                         /* スマホ用の爆弾アイコン高さを調整します */
+  }
+
+  .cell.safe {
+    font-size: 2.0rem;                      /* 安全マスの数字の大きさを拡大調整します */
+  }
+
+  .modal-content {
+    width: 90%;                             /* スマホ画面に合わせてモーダルの横幅を自動調整します */
+    height: 500px;                          /* スマホ用の適度な高さに調整 */
+    padding: 24px 20px;                     /* モーダル内部の余白を調整します */
+  }
+
+  .rule-page h2 {
+    font-size: 1.5rem;                      /* スマホ用に見出しサイズを少し縮小します */
+  }
+
+  .rule-page ul {
+    font-size: 1.05rem;                     /* スマホ用に本文テキストサイズを調整します */
+    line-height: 1.6;                       /* スマホ用に行間を調整します */
+  }
+
+  .rule-page li {
+    margin-bottom: 10px;                    /* スマホ用にリスト項目の間隔を調整します */
+  }
+
+  .rule-cell-img {
+    width: 60px;                            /* スマホ用に画像サイズを少し縮小 */
+    height: 60px;
+  }
+}
